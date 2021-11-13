@@ -1,8 +1,6 @@
 package com.company;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -13,18 +11,18 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        ByteBuffer pump_on_buf = ByteBuffer.allocate(10);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(10);
 
         int matricula = 2014066803;
-        int identificador = 2323133;
+        int identificador = 2323563;
 
-        pump_on_buf.putShort((short) 1);
-        pump_on_buf.putInt(matricula);
-        pump_on_buf.putInt(identificador);
-        byte[] pump_on = pump_on_buf.array();
+        byteBuffer.putShort((short) 1);
+        byteBuffer.putInt(matricula);
+        byteBuffer.putInt(identificador);
+        byte[] pump_on = byteBuffer.array();
+
+
         System.out.println(Arrays.toString(pump_on));
-
-        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 
         DatagramSocket clientSocket = new DatagramSocket();
 
@@ -34,16 +32,15 @@ public class Main {
         byte[] receiveData = new byte[1024];
         String sentence = "2014066803";
         sendData = sentence.getBytes();
-        ByteBuffer byteBuffer = ByteBuffer.wrap(pump_on);
 
 
         System.out.println("Digite o texto a ser enviado ao servidor: ");
 
 
-        DatagramPacket sendPacket = new DatagramPacket(pump_on, sendData.length, IPAddress, 51212);
+        DatagramPacket datagramPacket = new DatagramPacket(pump_on, sendData.length, IPAddress, 51212);
 
         System.out.println("Enviando pacote UDP para " + "auth20212.dcc023.2advanced.dev" + ":" + 51212);
-        clientSocket.send(sendPacket);
+        clientSocket.send(datagramPacket);
 
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
