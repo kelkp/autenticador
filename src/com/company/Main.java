@@ -21,7 +21,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[74];
 
         DatagramSocket clientSocket = datagramSocketBuilderFlow.datagramSocketbuilder();
@@ -42,24 +41,22 @@ public class Main {
 
         clientSocket.receive(receivePacket);
 
-        System.out.println("Pacote UDP recebido...");
-
         String modifiedSentence = new String(receivePacket.getData());
-        StringBuilder stringBuffer = new StringBuilder();
+
         System.out.println(modifiedSentence);
 
+//        StringBuilder stringBuffer = new StringBuilder();
 
-        char[] hexaDecimal = modifiedSentence.toCharArray();
-        for (char c : hexaDecimal) {
-            String hexString = Integer.toHexString(c);
-            stringBuffer.append(hexString);
-        }
 
-        String result = stringBuffer.toString();
-
-        System.out.println("Texto recebido do servidor:" + result);
+//        char[] hexaDecimal = modifiedSentence.toCharArray();
+//        for (char c : hexaDecimal) {
+//            String hexString = Integer.toHexString(c);
+//            stringBuffer.append(hexString);
+//        }
+//
+//        String result = stringBuffer.toString();
+//
 
         clientSocket.close();
-        System.out.println("Socket cliente fechado!");
     }
 }
