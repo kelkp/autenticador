@@ -1,6 +1,7 @@
 package com.company;
 
 import com.company.constants.ClientConstants;
+import com.company.flow.*;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -11,37 +12,43 @@ import java.util.Arrays;
 
 public class Main {
 
+    public static DatagramSocketBuilderFlow datagramSocketBuilderFlow = new DatagramSocketBuilderFlow();
+    public static InetAdressGetNameFlow inetAdressGetNameFlow = new InetAdressGetNameFlow();
+    public static ByteBufferAllocateFlow byteBufferAllocateFlow = new ByteBufferAllocateFlow();
+    public static ByteBufferPutFlow byteBufferPutFlow = new ByteBufferPutFlow();
+    public static DatagramPacketBuilderFlow datagramPacketBuilderFlow = new DatagramPacketBuilderFlow();
+    public static DatagramReceivedPacketBuilderFlow datagramReceivedPacketBuilderFlow = new DatagramReceivedPacketBuilderFlow();
+
     public static void main(String[] args) throws IOException {
-        DatagramSocket clientSocket = new DatagramSocket();
-
-        InetAddress IPAddress = InetAddress.getByName(ClientConstants.SERVER_HOST_NAME);
-
-        ByteBuffer byteBuffer = ByteBuffer.allocate(ClientConstants.BUFFER_SIZE);
-
-        byteBuffer.putShort((short) 1);
-        byteBuffer.putInt(ClientConstants.MATRICULA);
-        byteBuffer.putInt(ClientConstants.IDENTIFIER);
-        byte[] pump_on = byteBuffer.array();
-
-        System.out.println(Arrays.toString(pump_on));
 
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[74];
-        String sentence = Integer.toString(ClientConstants.MATRICULA);
-        sendData = sentence.getBytes();
 
-        DatagramPacket datagramPacket = new DatagramPacket(pump_on, sendData.length, IPAddress, 51212);
+        DatagramSocket clientSocket = datagramSocketBuilderFlow.datagramSocketbuilder();
 
-        System.out.println("Enviando pacote UDP para " + ClientConstants.SERVER_HOST_NAME + ":" + ClientConstants.SERVER_PORT);
+        InetAddress IPAddress = inetAdressGetNameFlow.inetAddressGetName();
+
+        ByteBuffer byteBuffer = byteBufferAllocateFlow.byteBufferAllocate();
+
+        byte[] pump_on = byteBufferPutFlow.byteBufferPut(byteBuffer); // mensagem a ser enviada
+
+        System.out.println(Arrays.toString(pump_on)); //apens para verificação
+
+        DatagramPacket datagramPacket = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.SERVER_PORT);
+
         clientSocket.send(datagramPacket);
 
-        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+        DatagramPacket receivePacket = datagramReceivedPacketBuilderFlow.datagramPacketReceived(receiveData, receiveData.length);
 
         clientSocket.receive(receivePacket);
+
         System.out.println("Pacote UDP recebido...");
 
         String modifiedSentence = new String(receivePacket.getData());
         StringBuilder stringBuffer = new StringBuilder();
+        System.out.println(modifiedSentence);
+
+
         char[] hexaDecimal = modifiedSentence.toCharArray();
         for (char c : hexaDecimal) {
             String hexString = Integer.toHexString(c);
@@ -50,10 +57,7 @@ public class Main {
 
         String result = stringBuffer.toString();
 
-
-
         System.out.println("Texto recebido do servidor:" + result);
-
 
         clientSocket.close();
         System.out.println("Socket cliente fechado!");
