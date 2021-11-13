@@ -30,7 +30,7 @@ public class Main {
 
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[74];
-        String sentence = "2014066803";
+        String sentence = Integer.toString(matricula);
         sendData = sentence.getBytes();
 
 
