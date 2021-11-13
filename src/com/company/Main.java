@@ -29,7 +29,7 @@ public class Main {
         InetAddress IPAddress = InetAddress.getByName("auth20212.dcc023.2advanced.dev");
 
         byte[] sendData = new byte[1024];
-        byte[] receiveData = new byte[1024];
+        byte[] receiveData = new byte[74];
         String sentence = "2014066803";
         sendData = sentence.getBytes();
 
@@ -48,9 +48,28 @@ public class Main {
         System.out.println("Pacote UDP recebido...");
 
         String modifiedSentence = new String(receivePacket.getData());
+        StringBuilder stringBuffer = new StringBuilder();
+        char[] hexaDecimal = modifiedSentence.toCharArray();
+        for (char c : hexaDecimal) {
+            String hexString = Integer.toHexString(c);
+            stringBuffer.append(hexString);
+        }
 
-        System.out.println("Texto recebido do servidor:" + modifiedSentence);
+        String result = stringBuffer.toString();
+
+        System.out.println("Texto recebido do servidor:" + result);
         clientSocket.close();
         System.out.println("Socket cliente fechado!");
+    }
+
+    private static String hexToAscii(String hexStr) {
+        StringBuilder output = new StringBuilder("");
+
+        for (int i = 0; i < hexStr.length(); i += 2) {
+            String str = hexStr.substring(i, i + 2);
+            output.append((char) Integer.parseInt(str, 16));
+        }
+
+        return output.toString();
     }
 }
