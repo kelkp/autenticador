@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 public class ByteBufferPutFlow {
 
-    public byte[] byteBufferPut(ByteBuffer byteBuffer) {
+    public byte[] byteBufferPut(ByteBuffer byteBuffer, Integer matricula, Integer identificador) {
         byteBuffer.putShort((short) 1);
         byteBuffer.putInt(ClientConstants.MATRICULA);
         byteBuffer.putInt(ClientConstants.IDENTIFIER);

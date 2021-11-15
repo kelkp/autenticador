@@ -5,5 +5,5 @@ public class ClientConstants {
     public static final Integer SERVER_PORT = 51212;
     public static final Integer BUFFER_SIZE = 10;
     public static final Integer MATRICULA = 2014066803;
-    public static final Integer IDENTIFIER = 2323563;
+    public static final Integer IDENTIFIER = 2;
 }
