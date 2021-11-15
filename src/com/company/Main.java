@@ -33,8 +33,6 @@ public class Main {
         Integer matricula = Integer.parseInt(input[3]);
         Integer identifier = Integer.parseInt(input[4]);
 
-        System.out.println(matricula);
-
         byte[] receiveData = new byte[74];
 
         DatagramSocket clientSocket = datagramSocketBuilderFlow.datagramSocketbuilder();
