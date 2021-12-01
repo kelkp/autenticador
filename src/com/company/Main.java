@@ -22,6 +22,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
+        System.out.println("Enviando dados");
+
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String[] input = new String[5];
         input = in.readLine().split(" ");
@@ -66,6 +68,8 @@ public class Main {
         clientSocket.receive(receivePacket1);
 
         String modifiedSentence1 = new String(receivePacket1.getData());
+
+        System.out.println(receivePacket.getOffset());
 
         System.out.println(modifiedSentence1);
 
