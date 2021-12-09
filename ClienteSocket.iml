@@ -9,12 +9,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library>
-        <CLASSES>
-
-        </CLASSES>
+        <CLASSES />
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="json-simple-1.1.1" level="project" />
   </component>
 </module>
