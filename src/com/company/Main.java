@@ -7,19 +7,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
 
     public static DatagramSocketBuilderFlow datagramSocketBuilderFlow = new DatagramSocketBuilderFlow();
     public static InetAdressGetNameFlow inetAdressGetNameFlow = new InetAdressGetNameFlow();
-    public static ByteBufferAllocateFlow byteBufferAllocateFlow = new ByteBufferAllocateFlow();
-    public static ByteBufferPutFlow byteBufferPutFlow = new ByteBufferPutFlow();
     public static DatagramPacketBuilderFlow datagramPacketBuilderFlow = new DatagramPacketBuilderFlow();
     public static DatagramReceivedPacketBuilderFlow datagramReceivedPacketBuilderFlow = new DatagramReceivedPacketBuilderFlow();
 
@@ -27,14 +24,10 @@ public class Main {
 
         AuthReq authReq = new AuthReq();
         JSONObject jsonObject = authReq.generateJsonBody();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(jsonObject.toJSONString());
-        oos.flush();
-        byte[] pump_on = baos.toByteArray();
-        byte[] receiveData = new byte[82];
 
-        DatagramPacket receivePacket = datagramReceivedPacketBuilderFlow.datagramPacketReceived(receiveData, receiveData.length);
+        String jsonText = jsonObject.toJSONString();
+        byte[] pump_on = jsonText.getBytes(StandardCharsets.US_ASCII);
+        byte[] buffer = new byte[1000000000];
 
         System.out.println(jsonObject);
 
@@ -42,26 +35,37 @@ public class Main {
 
         InetAddress IPAddress = inetAdressGetNameFlow.inetAddressGetName(ClientConstants.SERVER_HOST_NAME);
 
-//        ByteBuffer byteBuffer = byteBufferAllocateFlow.byteBufferAllocate();
+        DatagramPacket receivePacketRiver1 = datagramReceivedPacketBuilderFlow.datagramPacketReceived(buffer, buffer.length);
+        DatagramPacket receivePacketRiver2 = datagramReceivedPacketBuilderFlow.datagramPacketReceived(buffer, buffer.length);
+        DatagramPacket receivePacketRiver3 = datagramReceivedPacketBuilderFlow.datagramPacketReceived(buffer, buffer.length);
+        DatagramPacket receivePacketRiver4 = datagramReceivedPacketBuilderFlow.datagramPacketReceived(buffer, buffer.length);
 
-//        byte[] pump_on = byteBufferPutFlow.byteBufferPut(byteBuffer, authReq.getAuth(), authReq.getAuth()); // mensagem a ser enviada
-
-        DatagramPacket datagramPacket1 = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.serverPort1);
-        DatagramPacket datagramPacket2 = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.serverPort2);
-        DatagramPacket datagramPacket3 = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.serverPort3);
-        DatagramPacket datagramPacket4 = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.serverPort4);
-
+        DatagramPacket datagramPacket1 = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.SERVER_PORT1);
+        DatagramPacket datagramPacket2 = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.SERVER_PORT2);
+        DatagramPacket datagramPacket3 = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.SERVER_PORT3);
+        DatagramPacket datagramPacket4 = datagramPacketBuilderFlow.datagramPacketBuilder(pump_on, ClientConstants.BUFFER_SIZE, IPAddress, ClientConstants.SERVER_PORT4);
+//
         clientSocket.send(datagramPacket1);
-        clientSocket.send(datagramPacket2);
-        clientSocket.send(datagramPacket3);
-        clientSocket.send(datagramPacket4);
+        clientSocket.receive(receivePacketRiver1);
 
-        clientSocket.receive(receivePacket);
-        String modifiedSentence = new String(receivePacket.getData());
+        String modifiedSentence = new String(receivePacketRiver1.getData());
         JSONParser parser = new JSONParser();
         JSONObject receivedJson = (JSONObject) parser.parse(modifiedSentence);
 
         System.out.println(receivedJson);
+
+        clientSocket.send(datagramPacket2);
+        clientSocket.receive(receivePacketRiver2);
+
+        clientSocket.send(datagramPacket3);
+        clientSocket.receive(receivePacketRiver3);
+
+        clientSocket.send(datagramPacket4);
+        clientSocket.receive(receivePacketRiver4);
+
+        System.out.println("Autenticações realizadas");
+
+
 
 
 //        String modifiedSentence = new String(receivePacket.getData());
@@ -80,7 +84,7 @@ public class Main {
 //
 //        clientSocket.send(datagramPacket1);
 //
-//        DatagramPacket receivePacket1 = datagramReceivedPacketBuilderFlow.datagramPacketReceived(receiveData, receiveData.length);
+//        DatagramPacket receivePacket1 = datagramReceivedPacketBuilderFlow.datagramPacketReceived(buffer, buffer.length);
 //
 //        clientSocket.receive(receivePacket1);
 //
